@@ -18,3 +18,9 @@ venv/
 # System files
 .DS_Store
 Thumbs.db
+
+# ignore git-tmp files
+.yaml~
+*~
+*.bak
+*.backup
