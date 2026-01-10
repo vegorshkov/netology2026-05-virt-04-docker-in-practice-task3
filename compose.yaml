@@ -1,0 +1,48 @@
+# добавляем  proxy.yaml
+include:
+  - proxy.yaml
+
+services:
+  # инициализируем базульку данных MySQL
+  db:
+    image: mysql:8
+    container_name: mysql-db
+    env_file: .env  # говорим что  существует .env файл с параметрами
+    networks:
+      backend:
+        ipv4_address: 172.20.0.10  # резервируем IP адрес для sql
+    restart: always  #  перезапуск сервиса в случае ошибок
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Веб-приложение FastAPI
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.python  # cобираем из Dockerfile.python
+    container_name: fastapi-app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      backend:
+        ipv4_address: 172.20.0.5  # резерв IP
+    restart: unless-stopped  # Всегда перезапускаться в случае ошибок
+    environment:
+      # ENV-переменные для подключения к MySQL по сетевому имени
+      DB_HOST: db  # cетевое имя сервиса
+      DB_PORT: 3306
+      DB_NAME: virtd
+      DB_USER: app
+      DB_PASSWORD: QwErTy1234
+    # Не экспортируем порт 5000 наружу - доступ только через прокси
+
+volumes:
+  mysql_data:
+
+# Сеть уже описана в proxy.yaml через include
+

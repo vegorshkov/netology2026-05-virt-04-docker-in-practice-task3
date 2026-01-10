@@ -1,0 +1,25 @@
+# Ignore by types
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv
+.gitignore
+.vscode/
+.idea/
+*.log
+.DS_Store
+Thumbs.db
+# игнорировать каталоги .git и .cache
+.git
+.cache
+# игнорировать все файлы *.class во всех каталогах, включая корневой каталог сборки
+**/*.class
+# игнорировать все файлы markdown (md) кроме всех файлов README*.md, исключая README-secret.md
+*.md
+!README*.md
+README-secret.md
+
